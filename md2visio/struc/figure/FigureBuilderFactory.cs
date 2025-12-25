@@ -30,11 +30,19 @@ namespace md2visio.struc.figure
             while (iter.HasNext())
             {
                 List<SynState> list = iter.Context.StateList;
+                Console.WriteLine($"BuildFigures: iter.Pos = {iter.Pos}, list.Count = {list.Count}, HasNext = {iter.HasNext()}");
                 for (int pos = iter.Pos + 1; pos < list.Count; ++pos)
                 {
                     string word = list[pos].Fragment;
-                    if (SttFigureType.IsFigure(word)) BuildFigure(word);
+                    Console.WriteLine("Checking word: " + word);
+                    if (SttFigureType.IsFigure(word)) 
+                    {
+                        Console.WriteLine("Building figure: " + word);
+                        BuildFigure(word);
+                        break; // 只构建一个图表？
+                    }
                 }
+                break; // 只构建第一个图表？
             }            
         }
         public void Quit()

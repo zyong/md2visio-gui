@@ -25,7 +25,7 @@
                     InputFile = args[++i];
                 else if(arg=="/O" && i + 1 < args.Length)
                     OutputPath = args[++i];
-                else if(arg=="/Y") 
+                else if(arg=="/Y")
                     Quiet = true;
                 else if(arg=="/V")
                     Visible = true;
@@ -33,14 +33,14 @@
                     Debug = true;
                 else if (arg == "/T")
                     Test = true;
-                else if(arg == "/?" 
+                else if(arg == "/?"
                     || arg == "/H"   || arg == "/HELP"
                     || arg == "-H"   || arg == "-HELP"
                     || arg == "--H"  || arg == "--HELP")
                     ShowHelp();
             }
 
-            bool success = InputFile != string.Empty && 
+            bool success = InputFile != string.Empty &&
                 OutputPath != string.Empty;
             if(!success) ShowHelp();
 
@@ -57,14 +57,20 @@
             // 执行转换逻辑（从原Program.cs复制）
             try
             {
+                Console.WriteLine("Creating SynContext...");
                 var synContext = new md2visio.mermaid.cmn.SynContext(InputFile);
+                Console.WriteLine("Running SttMermaidStart...");
                 md2visio.mermaid.cmn.SttMermaidStart.Run(synContext);
+                Console.WriteLine("Parsed states: " + synContext.StateList.Count);
 
                 if (Debug)
                     Console.Write(synContext.ToString());
 
+                Console.WriteLine("Creating FigureBuilderFactory...");
                 _factory ??= new md2visio.struc.figure.FigureBuilderFactory(synContext.NewSttIterator());
+                Console.WriteLine("Building figure...");
                 _factory.Build(OutputPath);
+                Console.WriteLine("Build completed successfully!");
 
                 // 如果不是Visio可见模式，则立即退出
                 if (!Visible)
@@ -75,6 +81,7 @@
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Exception in Main: {ex.GetType().Name}: {ex.Message}");
                 if (Debug)
                     throw;
                 else

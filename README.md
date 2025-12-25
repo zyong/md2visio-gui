@@ -45,7 +45,7 @@
 - [x] **Configuration** (配置指令)
   - [x] `frontmatter`
   - [x] `directive`
-- [ ] **sequenceDiagram** (时序图) - **暂不支持**
+- [x] **sequenceDiagram** (时序图) - **支持**
 - [ ] **classDiagram** (类图) - **暂不支持**
 - [ ] **stateDiagram / stateDiagram-v2** (状态图) - **暂不支持**
 - [ ] **erDiagram** (实体关系图) - **暂不支持**

@@ -71,8 +71,12 @@ namespace md2visio.vsdx.@base
         {
             visioPage.ResizeToFitContents();
 
+            // 转换为绝对路径
+            string absolutePath = Path.GetFullPath(outputFile);
+            Console.WriteLine($"Saving to: {absolutePath}");
+
             AppConfig config = AppConfig.Instance;
-            
+
             // 如果显示Visio窗口，给用户时间查看结果
             if (config.Visible && VisioApp != null)
             {
@@ -82,14 +86,30 @@ namespace md2visio.vsdx.@base
             }
 
             bool overwrite = true;
-            if (!config.Quiet && File.Exists(outputFile))
+            if (!config.Quiet && File.Exists(absolutePath))
             {
-                Console.WriteLine($"Output file '{outputFile}' exists, input Y to overwrite: ");
+                Console.WriteLine($"Output file '{absolutePath}' exists, input Y to overwrite: ");
                 overwrite = Console.ReadLine()?.ToLower() == "y";
             }
 
-            if (overwrite) visioDoc.SaveAsEx(outputFile, 0);
-            else visioDoc.Saved = true;
+            if (overwrite)
+            {
+                try
+                {
+                    visioDoc.SaveAsEx(absolutePath, 0);
+                    Console.WriteLine($"✓ File saved successfully: {absolutePath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"✗ Failed to save file: {ex.Message}");
+                    throw;
+                }
+            }
+            else
+            {
+                visioDoc.Saved = true;
+                Console.WriteLine("File save skipped by user");
+            }
 
             // 如果不显示Visio，立即关闭；如果显示，保持打开状态
             if (!config.Visible)

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("md2visio")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("ConsoleRelease")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75e9038761a6d70c38a45da1a8421ccda04da2be")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+730b8da2246cf587fe6c2733a91a30b6eefecbe7")]
 [assembly: System.Reflection.AssemblyProductAttribute("md2visio")]
 [assembly: System.Reflection.AssemblyTitleAttribute("md2visio")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

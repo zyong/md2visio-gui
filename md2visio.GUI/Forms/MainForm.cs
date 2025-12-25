@@ -621,7 +621,17 @@ namespace md2visio.GUI.Forms
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => OnProgressChanged(sender, e)));
+                try
+                {
+                    Invoke(new Action(() => OnProgressChanged(sender, e)));
+                }
+                catch (System.Reflection.TargetInvocationException tie)
+                {
+                    // 尝试记录内部异常，避免上层显示不明确的 TargetInvocation 信息
+                    var inner = tie.InnerException?.Message ?? tie.Message;
+                    Console.WriteLine($"Invoke OnProgressChanged failed: {inner}");
+                    try { LogMessage($"Invoke OnProgressChanged failed: {inner}"); } catch { /* ignore */ }
+                }
                 return;
             }
 
@@ -633,7 +643,16 @@ namespace md2visio.GUI.Forms
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => OnLogMessage(sender, e)));
+                try
+                {
+                    Invoke(new Action(() => OnLogMessage(sender, e)));
+                }
+                catch (System.Reflection.TargetInvocationException tie)
+                {
+                    var inner = tie.InnerException?.Message ?? tie.Message;
+                    Console.WriteLine($"Invoke OnLogMessage failed: {inner}");
+                    try { _logTextBox?.AppendText($"[ERROR] {inner}\n"); } catch { /* ignore logging failure */ }
+                }
                 return;
             }
 

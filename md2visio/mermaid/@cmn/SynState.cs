@@ -88,16 +88,24 @@ namespace md2visio.mermaid.cmn
 
         public SynState Forward(Type sttType)
         {
-            MethodInfo? forwardInfo = GetType().GetMethod("Forward", BindingFlags.Public | BindingFlags.Instance, 
-                null, new Type[] { }, null);
-            if (forwardInfo == null) throw new MissingMethodException("could not find the method 'Forward'");
+            try
+            {
+                MethodInfo? forwardInfo = GetType().GetMethod("Forward", BindingFlags.Public | BindingFlags.Instance, 
+                    null, new Type[] { }, null);
+                if (forwardInfo == null) throw new MissingMethodException("could not find the method 'Forward'");
 
-            MethodInfo genericMethod = forwardInfo.MakeGenericMethod(sttType);
-            object? rst = genericMethod.Invoke(this, null);
+                MethodInfo genericMethod = forwardInfo.MakeGenericMethod(sttType);
+                object? rst = genericMethod.Invoke(this, null);
 
-            if (rst == null) throw new NullReferenceException("target state can't be null");
+                if (rst == null) throw new NullReferenceException("target state can't be null");
 
-            return (SynState) rst;
+                return (SynState) rst;
+            }
+            catch (TargetInvocationException ex)
+            {
+                // Unwrap the inner exception
+                throw ex.InnerException ?? ex;
+            }
         }
 
         public SynState Create<T>() where T : SynState, new()
