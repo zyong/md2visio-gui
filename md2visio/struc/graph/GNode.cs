@@ -18,6 +18,8 @@ namespace md2visio.struc.graph
         List<GNode> outputNodes = new List<GNode>();
         List<GNode> inputNodes = new List<GNode>();
         GNodeShape nodeShape = new GNodeShape();
+        List<string> styleClassNames = new List<string>(); // CSS class names applied to this node
+        GNodeStyle nodeStyle = new GNodeStyle(); // Computed style for this node
 
         public GNode() : this(Empty.Get<EmptyFigure>(), string.Empty) { }
 
@@ -58,6 +60,15 @@ namespace md2visio.struc.graph
         }
 
         public Container Container { get; set; }
+
+        public List<string> StyleClassNames { get { return styleClassNames; } }
+        public GNodeStyle NodeStyle { get { return nodeStyle; } }
+
+        public void AddStyleClass(string className)
+        {
+            if (!styleClassNames.Contains(className))
+                styleClassNames.Add(className);
+        }
 
         public PointF ShiftPos(GNode fixedNode, RelativePos rpos)
         {

@@ -97,6 +97,18 @@ namespace md2visio.struc.graph
                 GatherNodes(nodes);
             }
 
+            // Check for inline style class (:::className)
+            next = iter.PeekNext();
+            if (next != null && next.Fragment.StartsWith(":::"))
+            {
+                iter.Next();
+                string className = next.Fragment.Substring(3).Trim(); // Remove ":::" prefix
+                if (!string.IsNullOrEmpty(className))
+                {
+                    node.AddStyleClass(className);
+                }
+            }
+
             return nodes;
         }
 
@@ -165,8 +177,69 @@ namespace md2visio.struc.graph
             else if (frag == "click") { }
             else if (frag == "style") { }
             else if (frag == "linkStyle") { }
-            else if (frag == "class") { }
-            else if (frag == "classDef") { }
+            else if (frag == "class")
+            {
+                // Syntax: class nodeId1,nodeId2 className
+                if (sttNext is not GSttKeywordParam) return;
+
+                SynState paramState = iter.Next();
+                CompoDict paramList = paramState.CompoList;
+
+                // Parse: class A,B className
+                // First T component contains node IDs, second T contains class name
+                var components = paramList.Values();
+                if (components.Count < 3) return; // [0] is "entire", [1] is node IDs, [2] is className
+
+                string nodeIdsStr = components[1].Value; // "A,B" or "A"
+                string className = components[2].Value;
+
+                // Split node IDs by comma
+                string[] nodeIds = nodeIdsStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                Graph graph = SuperContainer();
+
+                foreach (string nodeId in nodeIds)
+                {
+                    string trimmedId = nodeId.Trim();
+                    if (string.IsNullOrEmpty(trimmedId)) continue;
+
+                    // Get or create the node
+                    GNode node = graph.RetrieveNode<GNode>(trimmedId);
+                    node.AddStyleClass(className);
+                }
+            }
+            else if (frag == "classDef")
+            {
+                // Syntax: classDef className fill:#f9f,stroke:#333,stroke-width:4px
+                if (sttNext is not GSttKeywordParam) return;
+
+                SynState paramState = iter.Next();
+                CompoDict paramList = paramState.CompoList;
+
+                // First T component is the class name, ":" component contains the CSS properties
+                var components = paramList.Values();
+                if (components.Count < 2) return;
+
+                string className = components[1].Value.Trim(); // [0] is "entire", [1] is className
+                string cssProperties = "";
+
+                // Find the ":" component which contains the CSS key-value pairs
+                foreach (var compo in components)
+                {
+                    if (compo.Key == ":")
+                    {
+                        cssProperties = compo.Value;
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(cssProperties)) return;
+
+                // Create and store the style class
+                Graph graph = SuperContainer();
+                GStyleClass styleClass = new GStyleClass(className);
+                styleClass.ParseProperties(cssProperties);
+                graph.StyleClasses[className] = styleClass;
+            }
         }
 
         Graph SuperContainer()

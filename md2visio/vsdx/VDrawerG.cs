@@ -22,13 +22,44 @@ namespace md2visio.vsdx
         {
             EnsureVisible(); // 确保Visio可见
             PauseForViewing(300); // 给用户时间看到初始状态
-            
+
+            // Compute styles for all nodes before drawing
+            ComputeNodeStyles(figure);
+
             DrawNodes(figure);
             PauseForViewing(500); // 节点绘制完成后暂停
-            
+
             DrawEdges(figure);
             PauseForViewing(300); // 边绘制完成后暂停
-        }        
+        }
+
+        /// <summary>
+        /// Compute final styles for all nodes by applying their style classes
+        /// </summary>
+        void ComputeNodeStyles(Graph graph)
+        {
+            foreach (var node in graph.NodeDict.Values)
+            {
+                if (node is GNode gNode)
+                {
+                    // Apply each style class to the node
+                    foreach (string className in gNode.StyleClassNames)
+                    {
+                        if (graph.StyleClasses.ContainsKey(className))
+                        {
+                            GStyleClass styleClass = graph.StyleClasses[className];
+                            gNode.NodeStyle.ApplyStyleClass(styleClass);
+                        }
+                    }
+                }
+            }
+
+            // Recursively process subgraphs
+            foreach (var subgraph in graph.Subgraphs)
+            {
+                ComputeNodeStyles(subgraph);
+            }
+        }
 
         void DrawNodes(Graph graph)
         {
@@ -77,11 +108,9 @@ namespace md2visio.vsdx
 
                 Shape shape = CreateShape(node);
                 PauseForViewing(150); // 每个节点创建后暂停
-                
-                SetFillForegnd(shape, "config.themeVariables.primaryColor");
-                SetLineColor(shape, "config.themeVariables.primaryBorderColor");
-                SetTextColor(shape, "config.themeVariables.primaryTextColor");
-                shape.CellsU["LineWeight"].FormulaU = "0.75 pt";
+
+                // Apply node style if available, otherwise use theme defaults
+                ApplyNodeStyle(shape, node);
                 PauseForViewing(100); // 样式设置后暂停
                 
                 if (alignBound.IsEmpty()) alignBound = new VShapeBoundary(shape);
@@ -299,6 +328,79 @@ namespace md2visio.vsdx
             SetLineColor(shape, "config.themeVariables.defaultLinkColor");
         }
 
+        /// <summary>
+        /// Apply computed node style (from classDef) to the Visio shape
+        /// </summary>
+        void ApplyNodeStyle(Shape shape, GNode node)
+        {
+            GNodeStyle style = node.NodeStyle;
+
+            // Apply fill color
+            if (style.Fill != null)
+            {
+                string? rgbColor = GNodeStyle.ParseColorToRGB(style.Fill);
+                if (rgbColor != null)
+                {
+                    shape.CellsU["FillForegnd"].FormulaU = rgbColor;
+                }
+            }
+            else
+            {
+                // Use theme default
+                SetFillForegnd(shape, "config.themeVariables.primaryColor");
+            }
+
+            // Apply stroke (border) color
+            if (style.Stroke != null)
+            {
+                string? rgbColor = GNodeStyle.ParseColorToRGB(style.Stroke);
+                if (rgbColor != null)
+                {
+                    shape.CellsU["LineColor"].FormulaU = rgbColor;
+                }
+            }
+            else
+            {
+                // Use theme default
+                SetLineColor(shape, "config.themeVariables.primaryBorderColor");
+            }
+
+            // Apply stroke width
+            if (style.StrokeWidth != null)
+            {
+                string? widthPt = GNodeStyle.ParseStrokeWidth(style.StrokeWidth);
+                if (widthPt != null)
+                {
+                    shape.CellsU["LineWeight"].FormulaU = widthPt;
+                }
+            }
+            else
+            {
+                shape.CellsU["LineWeight"].FormulaU = "0.75 pt";
+            }
+
+            // Apply text color
+            if (style.Color != null)
+            {
+                string? rgbColor = GNodeStyle.ParseColorToRGB(style.Color);
+                if (rgbColor != null)
+                {
+                    shape.CellsU["Char.Color"].FormulaU = rgbColor;
+                }
+            }
+            else
+            {
+                // Use theme default
+                SetTextColor(shape, "config.themeVariables.primaryTextColor");
+            }
+
+            // Apply stroke dash array (for dashed lines)
+            if (style.StrokeDasharray != null)
+            {
+                // "5 5" means dashed line pattern
+                shape.CellsU["LinePattern"].FormulaU = "2"; // Dashed
+            }
+        }
 
     }
 }

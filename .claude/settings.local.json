@@ -26,7 +26,12 @@
       "Bash(md2visio\\\\bin\\\\ConsoleRelease\\\\net8.0\\\\win-x64\\\\md2visio.exe:*)",
       "Bash(cmd /c \"md2visio\\\\bin\\\\ConsoleRelease\\\\net8.0\\\\win-x64\\\\md2visio.exe /I test_sequence.md /O test_sequence_lifeline.vsdx /Y /V\")",
       "Bash(cmd /c dir test_sequence*.vsdx)",
-      "Bash(cmd /c:*)"
+      "Bash(cmd /c:*)",
+      "Bash(Select-String -Pattern \"error|warning CS|succeeded|failed\")",
+      "Bash(Select-Object -First 50)",
+      "Bash(taskkill:*)",
+      "Bash(./md2visio.exe:*)",
+      "Bash(\"md2visio/bin/ConsoleRelease/net8.0/win-x64/md2visio.exe\" /I \"md2visio/test/graph.md\" /O \"test_graph_output.vsdx\" /Y)"
     ],
     "deny": []
   },

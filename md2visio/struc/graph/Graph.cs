@@ -7,10 +7,12 @@ namespace md2visio.struc.graph
     internal class Graph : Figure
     {
         Dictionary<string, GSubgraph> subgraphDict = new Dictionary<string, GSubgraph>();
+        Dictionary<string, GStyleClass> styleClasses = new Dictionary<string, GStyleClass>(); // Store classDef definitions
         protected LinkedList<GNode> alignedInnerNodes = new LinkedList<GNode>();
         protected LinkedList<GNode> alignedGroupedNodes = new LinkedList<GNode>();
 
         public List<GSubgraph> Subgraphs { get { return subgraphDict.Values.ToList(); } }
+        public Dictionary<string, GStyleClass> StyleClasses { get { return styleClasses; } }
 
         public Graph()
         {
