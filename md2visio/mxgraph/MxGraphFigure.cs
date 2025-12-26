@@ -19,7 +19,10 @@ namespace md2visio.mxgraph
 
         public List<MxCell> GetVertices()
         {
-            return cells.Where(c => c.Vertex).ToList();
+            return cells.Where(c => c.Vertex &&
+                                   c.Id != "0" &&
+                                   c.Id != "1" &&
+                                   c.Geometry != null).ToList();
         }
 
         public List<MxCell> GetEdges()

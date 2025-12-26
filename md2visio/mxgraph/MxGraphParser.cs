@@ -10,7 +10,24 @@ namespace md2visio.mxgraph
             var doc = XDocument.Parse(xmlContent);
             var root = doc.Root;
 
-            foreach (var cellElement in root.Elements("mxCell"))
+            // mxGraph XML structure: <mxGraphModel><root><mxCell>...</mxCell></root></mxGraphModel>
+            // So we need to look for mxCell elements inside the <root> element
+            var rootElement = root?.Element("root");
+            if (rootElement == null)
+            {
+                // If there's no <root> element, try to find mxCell directly
+                rootElement = root;
+            }
+
+            if (rootElement == null)
+            {
+                Console.WriteLine("Warning: Could not find root element in mxGraph XML");
+                return cells;
+            }
+
+            Console.WriteLine($"Found {rootElement.Elements("mxCell").Count()} mxCell elements");
+
+            foreach (var cellElement in rootElement.Elements("mxCell"))
             {
                 var cell = new MxCell
                 {

@@ -31,7 +31,12 @@
       "Bash(Select-Object -First 50)",
       "Bash(taskkill:*)",
       "Bash(./md2visio.exe:*)",
-      "Bash(\"md2visio/bin/ConsoleRelease/net8.0/win-x64/md2visio.exe\" /I \"md2visio/test/graph.md\" /O \"test_graph_output.vsdx\" /Y)"
+      "Bash(\"md2visio/bin/ConsoleRelease/net8.0/win-x64/md2visio.exe\" /I \"md2visio/test/graph.md\" /O \"test_graph_output.vsdx\" /Y)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(Get-Process VISIO -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"$xmlContent = Get-Content ''test_mxgraph_fixed.md'' -Raw -Encoding UTF8; dotnet run --project md2visio/md2visio.csproj --configuration ConsoleRelease --no-build -- testmx\")"
     ],
     "deny": []
   },
