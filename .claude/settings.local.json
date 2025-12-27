@@ -36,7 +36,8 @@
       "Bash(Get-Process VISIO -ErrorAction SilentlyContinue)",
       "Bash(Stop-Process -Force)",
       "Bash(powershell -Command:*)",
-      "Bash(powershell -ExecutionPolicy Bypass -Command \"$xmlContent = Get-Content ''test_mxgraph_fixed.md'' -Raw -Encoding UTF8; dotnet run --project md2visio/md2visio.csproj --configuration ConsoleRelease --no-build -- testmx\")"
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"$xmlContent = Get-Content ''test_mxgraph_fixed.md'' -Raw -Encoding UTF8; dotnet run --project md2visio/md2visio.csproj --configuration ConsoleRelease --no-build -- testmx\")",
+      "Bash(md2visiobinConsoleReleasenet8.0win-x64md2visio.exe /I test_classdiagram.md /O test_classdiagram_output.vsdx /Y /V)"
     ],
     "deny": []
   },

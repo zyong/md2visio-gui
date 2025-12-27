@@ -7,6 +7,7 @@ using md2visio.mermaid.sequence;
 using md2visio.mermaid.sequence._internal;
 using md2visio.mermaid.xy;
 using md2visio.mermaid.er;
+using md2visio.mermaid.classdiagram;
 using md2visio.struc.graph;
 using md2visio.struc.journey;
 using md2visio.struc.packet;
@@ -14,6 +15,7 @@ using md2visio.struc.pie;
 using md2visio.struc.sequence;
 using md2visio.struc.xy;
 using md2visio.struc.er;
+using md2visio.struc.classdiagram;
 
 namespace md2visio.mermaid.cmn
 {
@@ -28,6 +30,7 @@ namespace md2visio.mermaid.cmn
             { "xychart-beta", typeof(XySttKeyword) }, { "xychart", typeof(XySttKeyword) },
             { "sequenceDiagram", typeof(SeSttKeyword) },
             { "erDiagram", typeof(ErSttKeyword) },
+            { "classDiagram", typeof(ClassSttKeyword) },
         };
 
         public static readonly Dictionary<string, Type> CharMap = new()
@@ -39,6 +42,7 @@ namespace md2visio.mermaid.cmn
             { "xychart-beta", typeof(XySttChar) }, { "xychart", typeof(XySttChar) },
             { "sequenceDiagram", typeof(SeSttChar) },
             { "erDiagram", typeof(ErSttChar) },
+            { "classDiagram", typeof(ClassSttChar) },
         };
 
         public static readonly Dictionary<string, Type> BuilderMap = new()
@@ -50,6 +54,7 @@ namespace md2visio.mermaid.cmn
             { "xychart-beta", typeof(XyBuilder) }, { "xychart", typeof(XyBuilder) },
             { "sequenceDiagram", typeof(SeBuilder) },
             { "erDiagram", typeof(ErBuilder) },
+            { "classDiagram", typeof(ClassBuilder) },
         };
 
         public static readonly Dictionary<string, string> ConfigMap = new()
@@ -61,6 +66,7 @@ namespace md2visio.mermaid.cmn
             {typeof(XyChart).Name, "xyChart"},
             {typeof(Sequence).Name, "sequence"},
             {typeof(ErDiagram).Name, "erDiagram"},
+            {typeof(ClassDiagram).Name, "classDiagram"},
         };
     }
 }
